@@ -8,47 +8,45 @@ import uuid
 import json
 import cpuinfo
 from datetime import datetime
+def calculate_plotting_time(log_file_path):
+    # Store start times, end times, and completion percentages
+    start_times = {}
+    end_times = {}
+    data = {}
 
+    with open(log_file_path, 'r') as log_file:
+        for line in log_file:
+            log_entry = json.loads(line)
+            log_message = log_entry["log"]
+            log_time = log_entry['time'].split('.')[0]
 
-# def calculate_plotting_time(log_file_path):
-#     # Store start times, end times, and completion percentages
-#     start_times = {}
-#     end_times = {}
-#     data = {}
+            log_time = datetime.strptime(log_time, "%Y-%m-%dT%H:%M:%S")
 
-#     with open(log_file_path, 'r') as log_file:
-#         for line in log_file:
-#             log_entry = json.loads(line)
-#             log_message = log_entry["log"]
-#             log_time = log_entry['time'].split('.')[0]
+            # Check if the log entry is about plotting
+            if "Plotting sector" in log_message:
 
-#             log_time = datetime.strptime(log_time, "%Y-%m-%dT%H:%M:%S")
+                disk_index = log_message.split("disk_farm_index=")[1].split("}")[0]
+                # completion = float(log_message.split("(")[1].split("%")[0])
 
-#             # Check if the log entry is about plotting
-#             if "Plotting sector" in log_message:
+                # # Initialize dictionary for each disk
+                if disk_index not in data:
+                    data[disk_index] = []
 
-#                 disk_index = log_message.split("disk_farm_index=")[1].split("}")[0]
-#                 # completion = float(log_message.split("(")[1].split("%")[0])
+                data[disk_index].append(log_time)
 
-#                 # # Initialize dictionary for each disk
-#                 if disk_index not in data:
-#                     data[disk_index] = []
+        for disk_index in data.keys():
+            datetime_list = data[disk_index]
+            oldest_datetime = min(datetime_list)
+            newest_datetime = max(datetime_list)
+            print(f'Oldest Time: {oldest_datetime}')
+            print(f'Newest Time: {newest_datetime}')
+            print(f'Total Sectors: {len(datetime_list)}')
 
-#                 data[disk_index].append(log_time)
+            time_difference = (newest_datetime - oldest_datetime).total_seconds() / 60
+            print(f'Total Time Difference: {time_difference}')
 
-#         for disk_index in data.keys():
-#             datetime_list = data[disk_index]
-#             oldest_datetime = min(datetime_list)
-#             newest_datetime = max(datetime_list)
-#             print(f'Oldest Time: {oldest_datetime}')
-#             print(f'Newest Time: {newest_datetime}')
-#             print(f'Total Sectors: {len(datetime_list)}')
-
-#             time_difference = (newest_datetime - oldest_datetime).total_seconds() / 60
-#             print(f'Total Time Difference: {time_difference}')
-
-#             plot_time = time_difference/len(datetime_list)
-#             print(plot_time)
+            plot_time = time_difference/len(datetime_list)
+            print(plot_time)
 
 # def calculate_agg_plottime(log_file_path):
 #     indexes = []
