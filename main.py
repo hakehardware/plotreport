@@ -201,11 +201,44 @@ class Parser:
 
     @staticmethod
     def parse_space_acres(log_location):
-        pass
+        indexes = []
+        times= []
+        sectors=0
+
+        with open(log_location, 'r', encoding='utf-8') as log_file:
+            for line in log_file:
+                if "Plotting sector" in line:
+                    log_time = line.split(' ')[0].split('.')[0]
+                    log_time = datetime.strptime(log_time, "%Y-%m-%dT%H:%M:%S")
+
+
+                    log_message = line.split('  ')[1]
+                    disk_index = log_message.split("disk_farm_index=")[1].split("}")[0]
+
+
+                    if disk_index not in indexes:
+                        indexes.append(disk_index)
+
+                    times.append(log_time)
+                    sectors+=1
+
+            oldest_datetime = min(times)
+            newest_datetime = max(times)
+            # print(f'Oldest Time: {oldest_datetime}')
+            # print(f'Newest Time: {newest_datetime}')
+            # print(f'Total Sectors: {len(times)}')
+            # print(f'Total Disks: {len(indexes)}')
+
+            time_difference = (newest_datetime - oldest_datetime).total_seconds() / 60
+            # print(f'Total Time Difference: {time_difference}')
+
+            plot_time = time_difference/len(times)
+            return {"plot_time": round(plot_time,2), "disks": len(indexes), "sectors": sectors}
 
     @staticmethod
     def parse_acli(log_location):
-        pass
+        print('Advanced CLI is currently not supported.')
+        return None
 
     @staticmethod
     def get_system_info():
@@ -252,23 +285,31 @@ def run(log_location, file_type):
     # Display Data
 
     # Prompt User
-    print(f'''
-======= System Info ===========
-Operating System: {system_info['os']}
-CPU: {system_info['cpu']}
+    if plotting_data and system_info:
+        print(f'''
+    ======= System Info ===========
+    Operating System: {system_info['os']}
+    CPU: {system_info['cpu']}
 
-=======Plotting Data===========
-Plot Time: {plotting_data['plot_time']}
-Disks: {plotting_data['disks']}
-Sectors: {plotting_data['sectors']}
+    =======Plotting Data===========
+    Plot Time: {plotting_data['plot_time']}
+    Disks: {plotting_data['disks']}
+    Sectors: {plotting_data['sectors']}
 
-''')
-    user_input = input("Would you like to submit the data to the Plot Report? (Y/n): ").strip().lower()
+    ''')
+        user_input = input("Would you like to submit the data to the Plot Report? (Y/n): ").strip().lower()
 
-    if user_input in ['', 'y', 'yes']:
-        print('submitting')
+        if user_input in ['', 'y', 'yes']:
+            print('submitting')
 
-    # Submit Data
+        # Submit Data
+        submit_data({
+            "uid": f'{uuid.uuid4()}', 
+            "os": system_info['os'],
+            "cpu": system_info['cpu'],
+            "disks": str(plotting_data['disks']),
+            "speed": str(plotting_data['plot_time'])
+        })
 
 
 if __name__ == "__main__":
