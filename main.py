@@ -5,7 +5,7 @@ import uuid
 import json
 import cpuinfo
 from datetime import datetime
-
+import time
 
 class Parser:
     @staticmethod
@@ -124,7 +124,7 @@ def run(log_location, file_type):
     # Prompt User
     submit_uuid = uuid.uuid4()
 
-    submission_time_utc = datetime.utcnow()
+    submission_time_utc = time.time()
 
     if plotting_data and system_info:
         print(f'''
