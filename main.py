@@ -290,6 +290,9 @@ def run(log_location, file_type):
 
     # Prompt User
     submit_uuid = uuid.uuid4()
+
+    submission_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
     if plotting_data and system_info:
         print(f'''
     Only the below data will be sent to the plotreport.hakedev.com:
@@ -320,7 +323,8 @@ def run(log_location, file_type):
                 "disks": str(plotting_data['disks']),
                 "speed": str(plotting_data['plot_time']),
                 "platform": platform,
-                "sectors": str(plotting_data['sectors'])
+                "sectors": str(plotting_data['sectors']),
+                "submission_time": submission_time
             })
 
 
