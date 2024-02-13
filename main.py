@@ -32,13 +32,7 @@ class Parser:
 
             oldest_datetime = min(times)
             newest_datetime = max(times)
-            # print(f'Oldest Time: {oldest_datetime}')
-            # print(f'Newest Time: {newest_datetime}')
-            # print(f'Total Sectors: {len(times)}')
-            # print(f'Total Disks: {len(indexes)}')
-
             time_difference = (newest_datetime - oldest_datetime).total_seconds() / 60
-            # print(f'Total Time Difference: {time_difference}')
 
             plot_time = time_difference/len(times)
             return {"plot_time": round(plot_time,2), "disks": len(indexes), "sectors": sectors}
@@ -68,13 +62,8 @@ class Parser:
 
             oldest_datetime = min(times)
             newest_datetime = max(times)
-            # print(f'Oldest Time: {oldest_datetime}')
-            # print(f'Newest Time: {newest_datetime}')
-            # print(f'Total Sectors: {len(times)}')
-            # print(f'Total Disks: {len(indexes)}')
 
             time_difference = (newest_datetime - oldest_datetime).total_seconds() / 60
-            # print(f'Total Time Difference: {time_difference}')
 
             plot_time = time_difference/len(times)
             return {"plot_time": round(plot_time,2), "disks": len(indexes), "sectors": sectors}
@@ -135,7 +124,7 @@ def run(log_location, file_type):
     # Prompt User
     submit_uuid = uuid.uuid4()
 
-    submission_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    submission_time_utc = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
 
     if plotting_data and system_info:
         print(f'''
@@ -168,7 +157,7 @@ def run(log_location, file_type):
                 "speed": str(plotting_data['plot_time']),
                 "platform": platform,
                 "sectors": str(plotting_data['sectors']),
-                "submission_time": submission_time
+                "submission_time_utc": submission_time_utc
             })
 
 
