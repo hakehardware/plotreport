@@ -200,7 +200,7 @@ class Parser:
             return {"plot_time": round(plot_time,2), "disks": len(indexes), "sectors": sectors}
 
     @staticmethod
-    def parse_space_acres(log_location):
+    def parse_log_file(log_location):
         indexes = []
         times= []
         sectors=0
@@ -269,13 +269,17 @@ def submit_data(data):
 def run(log_location, file_type):
     # Get Plotting Times
     plotting_data = None
+    platform = None
 
     if file_type == 0:
         plotting_data = Parser.parse_docker(log_location)
+        platform = "Docker"
     elif file_type == 1:
-        plotting_data = Parser.parse_space_acres(log_location)
+        plotting_data = Parser.parse_log_file(log_location)
+        platform = "Space Acres"
     elif file_type == 2:
-        plotting_data = Parser.parse_acli(log_location)
+        plotting_data = Parser.parse_log_file(log_location)
+        platform = "ACLI"
     else:
         raise ValueError(f'File Type of {file_type} does not match options.')
     
@@ -285,31 +289,39 @@ def run(log_location, file_type):
     # Display Data
 
     # Prompt User
+    submit_uuid = uuid.uuid4()
     if plotting_data and system_info:
         print(f'''
+    Only the below data will be sent to the plotreport.hakedev.com:
+              
     ======= System Info ===========
     Operating System: {system_info['os']}
     CPU: {system_info['cpu']}
+    Platform: {platform}
 
     =======Plotting Data===========
     Plot Time: {plotting_data['plot_time']}
     Disks: {plotting_data['disks']}
     Sectors: {plotting_data['sectors']}
 
+    Submission UUID: {submit_uuid}
+
     ''')
-        user_input = input("Would you like to submit the data to the Plot Report? (Y/n): ").strip().lower()
+        user_input = input("Would you like to continue? (Y/n): ").strip().lower()
 
         if user_input in ['', 'y', 'yes']:
             print('submitting')
 
-        # Submit Data
-        submit_data({
-            "uid": f'{uuid.uuid4()}', 
-            "os": system_info['os'],
-            "cpu": system_info['cpu'],
-            "disks": str(plotting_data['disks']),
-            "speed": str(plotting_data['plot_time'])
-        })
+            # Submit Data
+            submit_data({
+                "uid": f'{submit_uuid}', 
+                "os": system_info['os'],
+                "cpu": system_info['cpu'],
+                "disks": str(plotting_data['disks']),
+                "speed": str(plotting_data['plot_time']),
+                "platform": platform,
+                "sectors": plotting_data['sectors']
+            })
 
 
 if __name__ == "__main__":
