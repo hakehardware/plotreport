@@ -323,7 +323,6 @@ def run(log_location, file_type):
                 "sectors": str(plotting_data['sectors'])
             })
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process command line arguments.")
     parser.add_argument("-l", "--log", help="Path to a log file", type=str, required=True)
