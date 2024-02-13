@@ -124,7 +124,7 @@ def run(log_location, file_type):
     # Prompt User
     submit_uuid = uuid.uuid4()
 
-    submission_time_utc = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    submission_time_utc = datetime.utcnow()
 
     if plotting_data and system_info:
         print(f'''
@@ -157,7 +157,7 @@ def run(log_location, file_type):
                 "speed": str(plotting_data['plot_time']),
                 "platform": platform,
                 "sectors": str(plotting_data['sectors']),
-                "submission_time_utc": submission_time_utc
+                "submission_time_utc": str(submission_time_utc)
             })
 
 
