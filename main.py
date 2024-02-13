@@ -292,7 +292,7 @@ def run(log_location, file_type):
     submit_uuid = uuid.uuid4()
 
     submission_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
+
     if plotting_data and system_info:
         print(f'''
     Only the below data will be sent to the plotreport.hakedev.com:
@@ -326,6 +326,7 @@ def run(log_location, file_type):
                 "sectors": str(plotting_data['sectors']),
                 "submission_time": submission_time
             })
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process command line arguments.")
