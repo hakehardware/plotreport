@@ -25,8 +25,9 @@ Windows
 ## Run the script
 ```python3 -l <log location> -t <file type>```
 
--l should be the full path to your logs. For windows you may need to escape your path
--t 0 for Docker, 1 for Space Acres, 2 for Advanced CLI
+`-l` should be the full path to your logs. For windows you may need to escape your path
+
+`-t` 0 for Docker, 1 for Space Acres, 2 for Advanced CLI
 
 ## Examples
 Docker
