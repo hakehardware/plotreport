@@ -320,7 +320,7 @@ def run(log_location, file_type):
                 "disks": str(plotting_data['disks']),
                 "speed": str(plotting_data['plot_time']),
                 "platform": platform,
-                "sectors": plotting_data['sectors']
+                "sectors": str(plotting_data['sectors'])
             })
 
 
